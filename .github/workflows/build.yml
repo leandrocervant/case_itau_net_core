@@ -63,7 +63,8 @@ jobs:
           /k:"leandrocervant_case_itau_net_core" `
           /o:"leandrocervant" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-          /d:sonar.host.url="https://sonarcloud.io"
+          /d:sonar.host.url="https://sonarcloud.io" `
+          /d:sonar.cs.opencover.reportsPaths="${{ steps.coverage.outputs.coverage_path }}"
 
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_NAME }}
@@ -71,11 +72,31 @@ jobs:
     - name: Build solution
       run: dotnet build ${{ env.SOLUTION_NAME }} --configuration Release --no-restore
 
-    - name: Run Unit Tests
-      run: dotnet test ${{ env.UNIT_TEST_PROJECT }} --configuration Release --no-build --logger trx
+    - name: Run Unit Tests with coverage
+      run: >
+        dotnet test ${{ env.UNIT_TEST_PROJECT }}
+        --configuration Release
+        --no-build
+        --logger trx
+        --collect:"XPlat Code Coverage"
 
-    - name: Run Integration Tests
-      run: dotnet test ${{ env.INTEGRATION_TEST_PROJECT }} --configuration Release --no-build --logger trx
+    - name: Run Integration Tests with coverage
+      run: >
+        dotnet test ${{ env.INTEGRATION_TEST_PROJECT }}
+        --configuration Release
+        --no-build
+        --logger trx
+        --collect:"XPlat Code Coverage"
+
+    - name: Find coverage report
+      id: coverage
+      shell: pwsh
+      run: |
+        $files = Get-ChildItem -Recurse -Filter 'coverage.cobertura.xml'
+        if ($files.Count -eq 0) {
+          throw "Coverage file not found!"
+        }
+        echo "##[set-output name=coverage_path;]$($files[0].FullName)"
 
     - name: End SonarCloud analysis
       env:
