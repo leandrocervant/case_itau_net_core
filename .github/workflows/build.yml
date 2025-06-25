@@ -1,0 +1,85 @@
+name: ASP.NET Core CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    env:
+      SOLUTION_NAME: CaseItau.sln
+      UNIT_TEST_PROJECT: tests/CaseItau.UnitTests/CaseItau.UnitTests.csproj
+      INTEGRATION_TEST_PROJECT: tests/CaseItau.IntegrationTests/CaseItau.IntegrationTests.csproj
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+          fetch-depth: 0
+          
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Set up JDK (required by SonarScanner)
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'zulu'
+
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v4
+      with:
+        path: ~\sonar\cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
+    - name: Cache SonarCloud scanner
+      id: cache-sonar-scanner
+      uses: actions/cache@v4
+      with:
+        path: .\.sonar\scanner
+        key: ${{ runner.os }}-sonar-scanner
+        restore-keys: ${{ runner.os }}-sonar-scanner
+
+    - name: Install SonarCloud scanner
+      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      shell: powershell
+      run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory -Force
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+
+    - name: Begin SonarCloud analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      shell: powershell
+      run: |
+        .\.sonar\scanner\dotnet-sonarscanner begin `
+          /k:"leandrocervant_case_itau_net_core" `
+          /o:"leandrocervant" `
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+          /d:sonar.host.url="https://sonarcloud.io"
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_NAME }}
+
+    - name: Build solution
+      run: dotnet build ${{ env.SOLUTION_NAME }} --configuration Release --no-restore
+
+    - name: Run Unit Tests
+      run: dotnet test ${{ env.UNIT_TEST_PROJECT }} --configuration Release --no-build --logger trx
+
+    - name: Run Integration Tests
+      run: dotnet test ${{ env.INTEGRATION_TEST_PROJECT }} --configuration Release --no-build --logger trx
+
+    - name: End SonarCloud analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      shell: powershell
+      run: |
+        .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
