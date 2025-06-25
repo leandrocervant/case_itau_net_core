@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CaseItau.API.Controllers;
 
-[Route("api/v1/[controller]")]
+[Route("api/v1/funds")]
 public class FundsController(ISender _mediator) : ApiController
 {
     [HttpPost]
