@@ -6,7 +6,7 @@ using MediatR;
 
 namespace CaseItau.Application.Funds.Commands.DeleteFund;
 
-public class DeleteFundCommandHandler(
+internal class DeleteFundCommandHandler(
     IFundRepository fundRepository,
     IUnitOfWork uow)
         : IRequestHandler<DeleteFundCommand, ErrorOr<Unit>>

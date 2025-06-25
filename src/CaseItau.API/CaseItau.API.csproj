@@ -11,6 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="CaseItau.UnitTests" />
+    <InternalsVisibleTo Include="CaseItau.IntegrationTests" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">

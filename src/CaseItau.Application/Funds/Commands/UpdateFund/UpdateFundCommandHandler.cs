@@ -8,7 +8,7 @@ using MediatR;
 
 namespace CaseItau.Application.Funds.Commands.DeleteFund;
 
-public class UpdateFundCommandHandler(
+internal class UpdateFundCommandHandler(
     IFundTypeRepository fundTypeRepository,
     IFundRepository fundRepository,
     IUnitOfWork uow)

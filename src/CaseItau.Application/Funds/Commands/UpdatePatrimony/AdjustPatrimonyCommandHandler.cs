@@ -6,7 +6,7 @@ using MediatR;
 
 namespace CaseItau.Application.Funds.Commands.AdjustPatrimony;
 
-public class AdjustPatrimonyCommandHandler(
+internal class AdjustPatrimonyCommandHandler(
     IFundRepository fundRepository,
     IUnitOfWork uow)
         : IRequestHandler<AdjustPatrimonyCommand, ErrorOr<Unit>>

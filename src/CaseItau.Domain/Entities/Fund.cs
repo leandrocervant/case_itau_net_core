@@ -13,6 +13,8 @@ public class Fund : Entity, IAggregateRoot
         Cnpj = cnpj;
         TypeId = typeId;
 
+        Validate();
+
         _events.Add(new FundCreatedEvent(
             Id,
             code,
@@ -30,4 +32,27 @@ public class Fund : Entity, IAggregateRoot
     public long TypeId { get; set; }
 
     public decimal Patrimony { get; set; }
+
+    private void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Code))
+        {
+            throw new ArgumentException("Code cannot be null or empty.", nameof(Code));
+        }
+
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            throw new ArgumentException("Name cannot be null or empty.", nameof(Name));
+        }
+
+        if (Cnpj is null)
+        {
+            throw new ArgumentNullException(nameof(Cnpj), "CNPJ cannot be null.");
+        }
+
+        if (TypeId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(TypeId), "TypeId must be greater than zero.");
+        }
+    }
 }

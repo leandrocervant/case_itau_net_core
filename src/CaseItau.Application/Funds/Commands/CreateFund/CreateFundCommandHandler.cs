@@ -8,7 +8,7 @@ using MediatR;
 
 namespace CaseItau.Application.Funds.Commands.CreateFund;
 
-public class CreateFundCommandHandler(
+internal class CreateFundCommandHandler(
     IFundTypeRepository fundTypeRepository,
     IFundRepository fundRepository,
     IUnitOfWork uow)
