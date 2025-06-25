@@ -14,6 +14,7 @@ var app = builder.Build();
 {
     app.UseExceptionHandler();
     app.UseInfrastructure();
+    app.UseHealthChecks("/health");
 
     if (app.Environment.IsDevelopment())
     {
