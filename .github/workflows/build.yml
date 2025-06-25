@@ -54,6 +54,9 @@ jobs:
         New-Item -Path .\.sonar\scanner -ItemType Directory -Force
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_NAME }}
+
     - name: Begin SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -63,10 +66,9 @@ jobs:
           /k:"leandrocervant_case_itau_net_core" `
           /o:"leandrocervant" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-          /d:sonar.host.url="https://sonarcloud.io"
-
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.SOLUTION_NAME }}
+          /d:sonar.host.url="https://sonarcloud.io" `
+          /d:sonar.cs.coveragePlugin="cobertura" `
+          /d:sonar.coverageReportPaths="**/coverage.cobertura.xml"
 
     - name: Build solution
       run: dotnet build ${{ env.SOLUTION_NAME }} --configuration Release --no-restore
@@ -86,17 +88,6 @@ jobs:
         --no-build
         --logger trx
         --collect:"XPlat Code Coverage"
-
-    - name: Find coverage report
-      id: coverage
-      shell: pwsh
-      run: |
-        $file = Get-ChildItem -Recurse -Filter 'coverage.cobertura.xml' | Select-Object -First 1
-        if (-not $file) {
-          throw "Coverage file not found!"
-        }
-        $path = $file.FullName -replace '\\', '/'
-        echo "coverage_path=$path" >> $env:GITHUB_OUTPUT
 
     - name: End SonarCloud analysis
       env:
