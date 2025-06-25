@@ -1,3 +1,4 @@
+using CaseItau.API;
 using CaseItau.Infrastructure.Persistence.Contexts;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CaseItau.IntegrationTests.Common;
 
-public class CaseItauWebApplicationFactory : WebApplicationFactory<Program>
+public class CaseItauWebApplicationFactory : WebApplicationFactory<IAssemblyMarker>
 {
     private SqliteTestDatabase _testDatabase = null!;
 
