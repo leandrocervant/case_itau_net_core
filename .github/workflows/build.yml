@@ -67,8 +67,8 @@ jobs:
           /o:"leandrocervant" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.host.url="https://sonarcloud.io" `
-          /d:sonar.cs.cobertura.reportsPaths="**\TestResults\**\coverage.cobertura.xml" `
-          /d:sonar.test.results.trx.locations="**\TestResults\**\*.trx"
+          /d:sonar.cs.cobertura.reportsPaths="tests\**\TestResults\**\coverage.cobertura.xml" `
+          /d:sonar.test.results.trx.locations="tests\**\TestResults\**\*.trx"
 
     - name: Build solution
       run: dotnet build ${{ env.SOLUTION_NAME }} --configuration Release --no-restore
@@ -89,6 +89,18 @@ jobs:
         --logger trx
         --collect:"XPlat Code Coverage"
 
+    # --- INÍCIO DAS ETAPAS DE DEPURAÇÃO ---
+    - name: Find generated TRX files
+      shell: powershell
+      run: |
+        Get-ChildItem -Path . -Recurse -Filter "*.trx" | ForEach-Object { Write-Host $_.FullName }
+
+    - name: Find generated Cobertura XML files
+      shell: powershell
+      run: |
+        Get-ChildItem -Path . -Recurse -Filter "coverage.cobertura.xml" | ForEach-Object { Write-Host $_.FullName }
+    # --- FIM DAS ETAPAS DE DEPURAÇÃO ---
+    
     - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
