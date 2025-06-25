@@ -1,3 +1,4 @@
+using CaseItau.Domain.Common;
 using CaseItau.Domain.Entities;
 using CaseItau.Domain.Events.Fund;
 using CaseItau.Domain.ValueObjects;
@@ -64,7 +65,7 @@ public class FundTests
 
         // Act & Assert
         var act = () => new Fund(code, name, null!, typeId);
-        act.Should().Throw<ArgumentNullException>();
+        act.Should().Throw<DomainException>();
     }
 
     [Theory]
@@ -80,7 +81,7 @@ public class FundTests
 
         // Act & Assert
         var act = () => new Fund(invalidCode!, name, cnpj, typeId);
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainException>();
     }
 
     [Theory]
@@ -96,7 +97,7 @@ public class FundTests
 
         // Act & Assert
         var act = () => new Fund(code, invalidName!, cnpj, typeId);
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainException>();
     }
 
     [Fact]

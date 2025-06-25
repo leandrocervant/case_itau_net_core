@@ -1,4 +1,5 @@
 ﻿using CaseItau.Domain.Common;
+using CaseItau.Domain.Common.Resouces;
 
 namespace CaseItau.Domain.ValueObjects;
 
@@ -17,12 +18,12 @@ public class Cnpj : ValueObject, IEquatable<Cnpj>
     {
         if (string.IsNullOrWhiteSpace(Value))
         {
-            throw new ArgumentException("CNPJ cannot be null or empty.", nameof(Value));
+            throw new DomainException(Errors.Cnpj_ValueCannotBeNullOrEmpty);
         }
 
         if (Value.Length != 14 || !long.TryParse(Value, out _))
         {
-            throw new ArgumentException("CNPJ must be a 14-digit number.", nameof(Value));
+            throw new DomainException(Errors.Cnpj_ValueMustBe14Digit);
         }
     }
 

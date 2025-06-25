@@ -80,7 +80,7 @@ public class FundsControllerIntegrationTests : IClassFixture<CaseItauWebApplicat
         var response = await _client.PostAsJsonAsync("/api/v1/funds", request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
