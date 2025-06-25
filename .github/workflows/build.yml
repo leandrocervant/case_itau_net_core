@@ -71,8 +71,9 @@ jobs:
           /o:"leandrocervant" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.host.url="https://sonarcloud.io" `
-          /d:sonar.cs.cobertura.reportsPaths="$workingDir/coverage-reports/*.xml" `
-          /d:sonar.test.results.trx.locations="$workingDir/test-results/*.trx"
+          /d:sonar.projectBaseDir="$workingDir" `
+          /d:sonar.cs.cobertura.reportsPaths="coverage-reports/*.xml" `
+          /d:sonar.test.results.trx.locations="test-results/*.trx"
 
     - name: Build solution
       run: dotnet build ${{ env.SOLUTION_NAME }} --configuration Release --no-restore
