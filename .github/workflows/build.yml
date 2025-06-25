@@ -67,8 +67,8 @@ jobs:
           /o:"leandrocervant" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.host.url="https://sonarcloud.io" `
-          /d:sonar.cs.coveragePlugin="cobertura" `
-          /d:sonar.coverageReportPaths="**/coverage.cobertura.xml"
+          /d:sonar.cs.opencover.reportsPaths="**\TestResults\*\coverage.opencover.xml" `
+          /d:sonar.test.results.trx.locations="**\TestResults\*.trx"
 
     - name: Build solution
       run: dotnet build ${{ env.SOLUTION_NAME }} --configuration Release --no-restore
@@ -80,6 +80,8 @@ jobs:
         --no-build
         --logger trx
         --collect:"XPlat Code Coverage"
+        -p:CollectCoverage=true 
+        -p:CoverletOutputFormat=opencover
 
     - name: Run Integration Tests with coverage
       run: >
@@ -88,6 +90,8 @@ jobs:
         --no-build
         --logger trx
         --collect:"XPlat Code Coverage"
+        -p:CollectCoverage=true 
+        -p:CoverletOutputFormat=opencover
 
     - name: End SonarCloud analysis
       env:
