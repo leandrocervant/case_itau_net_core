@@ -1,6 +1,8 @@
 using CaseItau.Application.Common.Errors;
 using CaseItau.Application.Funds.Commands.CreateFund;
+using CaseItau.Domain.Common;
 using CaseItau.Domain.Common.Interfaces;
+using CaseItau.Domain.Common.Resouces;
 using CaseItau.Domain.Entities;
 using CaseItau.Domain.Repositories;
 using CaseItau.Domain.ValueObjects;
@@ -125,10 +127,10 @@ public class CreateFundCommandHandlerTests
     [InlineData(null, "Valid Name", "123456780001951")]
     [InlineData("FUND001", "", "123456780001951")]
     [InlineData("FUND001", null, "123456780001951")]
-    public async Task Handle_WithInvalidCnpj_ShouldThrowArgumentException(string code, string name, string invalidCnpj)
+    public async Task Handle_WithInvalidCnpj_ShouldThrowDomainException(string? code, string? name, string invalidCnpj)
     {
         // Arrange
-        var command = new CreateFundCommand(code, name, invalidCnpj, 1);
+        var command = new CreateFundCommand(code!, name!, invalidCnpj, 1);
         var fundType = new FundType("Equity Fund");
 
         _fundTypeRepositoryMock
@@ -141,11 +143,11 @@ public class CreateFundCommandHandlerTests
 
         // Act & Assert
         var act = async () => await _handler.Handle(command, CancellationToken.None);
-        await act.Should().ThrowAsync<ArgumentException>();
+        await act.Should().ThrowAsync<DomainException>();
     }
 
     [Fact]
-    public async Task Handle_WithInvalidCnpjFormat_ShouldThrowArgumentException()
+    public async Task Handle_WithInvalidCnpjFormat_ShouldThrowDomainException()
     {
         // Arrange
         var command = new CreateFundCommand("FUND001", "Test Fund", "invalid-cnpj", 1);
@@ -161,7 +163,7 @@ public class CreateFundCommandHandlerTests
 
         // Act & Assert
         var act = async () => await _handler.Handle(command, CancellationToken.None);
-        await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("CNPJ must be a 14-digit number. (Parameter 'Value')");
+        await act.Should().ThrowAsync<DomainException>()
+            .WithMessage(Errors.Cnpj_ValueMustBe14Digit);
     }
 }

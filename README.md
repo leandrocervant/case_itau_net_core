@@ -17,7 +17,7 @@ Esta é uma API REST para gerenciamento de fundos de investimento, desenvolvida 
 
 ```csharp
 // ❌ Antes (Vulnerável)
-string sql = $"SELECT * FROM Funds WHERE Code = '{code}'";
+string sql = $"SELECT * FROM FUNDO WHERE CODIGO = '{code}'";
 
 // ✅ Depois (Seguro)
 var fund = await _context.Funds.FirstOrDefaultAsync(f => f.Code == code);
@@ -134,7 +134,7 @@ public async Task<IActionResult> AdjustPatrimony(string code, AdjustPatrimonyReq
 ## 🧪 Testes Implementados
 
 ### **Cobertura de Testes**
-- **Unit Tests**: 95%+ de cobertura em domínio e aplicação
+- **Unit Tests**: cobertura em domínio e aplicação
 - **Integration Tests**: Testes end-to-end dos endpoints
 - **Testes de Repository**: Validação de persistência
 
@@ -204,16 +204,13 @@ public record FundResponse(
 
 ### **Pré-requisitos**
 - .NET 8 SDK
-- SQL Server ou SQLite (configurável)
+- SQLite (configurável)
 
 ### **Comandos**
 
 ```bash
 # Restaurar dependências
 dotnet restore
-
-# Executar migrations
-dotnet ef database update --project src/CaseItau.Infrastructure
 
 # Executar aplicação
 dotnet run --project src/CaseItau.API

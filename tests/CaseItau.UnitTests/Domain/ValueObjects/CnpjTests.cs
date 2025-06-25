@@ -1,3 +1,5 @@
+using CaseItau.Domain.Common;
+using CaseItau.Domain.Common.Resouces;
 using CaseItau.Domain.ValueObjects;
 using FluentAssertions;
 using Xunit;
@@ -23,12 +25,11 @@ public class CnpjTests
     [InlineData("")]
     [InlineData("   ")]
     [InlineData(null)]
-    public void Constructor_WithNullOrEmptyCnpj_ShouldThrowArgumentException(string invalidCnpj)
+    public void Constructor_WithNullOrEmptyCnpj_ShouldThrowDomainException(string? invalidCnpj)
     {
         // Act & Assert
-        var act = () => new Cnpj(invalidCnpj);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("CNPJ cannot be null or empty. (Parameter 'Value')");
+        var act = () => new Cnpj(invalidCnpj!);
+        act.Should().Throw<DomainException>().WithMessage(Errors.Cnpj_ValueCannotBeNullOrEmpty);
     }
 
     [Theory]
@@ -36,12 +37,11 @@ public class CnpjTests
     [InlineData("123456789001234")] // Too long
     [InlineData("1234567800019a")] // Contains letter
     [InlineData("12.345.678/0001-95")] // With formatting
-    public void Constructor_WithInvalidFormat_ShouldThrowArgumentException(string invalidCnpj)
+    public void Constructor_WithInvalidFormat_ShouldThrowDomainException(string invalidCnpj)
     {
         // Act & Assert
         var act = () => new Cnpj(invalidCnpj);
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("CNPJ must be a 14-digit number. (Parameter 'Value')");
+        act.Should().Throw<DomainException>().WithMessage(Errors.Cnpj_ValueMustBe14Digit);
     }
 
     [Fact]

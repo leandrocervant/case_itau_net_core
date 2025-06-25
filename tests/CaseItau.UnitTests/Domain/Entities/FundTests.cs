@@ -1,3 +1,4 @@
+using CaseItau.Domain.Common;
 using CaseItau.Domain.Entities;
 using CaseItau.Domain.Events.Fund;
 using CaseItau.Domain.ValueObjects;
@@ -64,14 +65,14 @@ public class FundTests
 
         // Act & Assert
         var act = () => new Fund(code, name, null!, typeId);
-        act.Should().Throw<ArgumentNullException>();
+        act.Should().Throw<DomainException>();
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Constructor_WithInvalidCode_ShouldCreateFundWithInvalidCode(string invalidCode)
+    public void Constructor_WithInvalidCode_ShouldCreateFundWithInvalidCode(string? invalidCode)
     {
         // Arrange
         const string name = "Test Fund";
@@ -79,15 +80,15 @@ public class FundTests
         const long typeId = 1;
 
         // Act & Assert
-        var act = () => new Fund(invalidCode, name, cnpj, typeId);
-        act.Should().Throw<ArgumentException>();
+        var act = () => new Fund(invalidCode!, name, cnpj, typeId);
+        act.Should().Throw<DomainException>();
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Constructor_WithInvalidName_ShouldCreateFundWithInvalidName(string invalidName)
+    public void Constructor_WithInvalidName_ShouldCreateFundWithInvalidName(string? invalidName)
     {
         // Arrange
         const string code = "FUND001";
@@ -95,8 +96,8 @@ public class FundTests
         const long typeId = 1;
 
         // Act & Assert
-        var act = () => new Fund(code, invalidName, cnpj, typeId);
-        act.Should().Throw<ArgumentException>();
+        var act = () => new Fund(code, invalidName!, cnpj, typeId);
+        act.Should().Throw<DomainException>();
     }
 
     [Fact]

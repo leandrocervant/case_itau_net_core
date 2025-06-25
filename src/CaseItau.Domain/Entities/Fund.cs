@@ -1,4 +1,5 @@
 ﻿using CaseItau.Domain.Common;
+using CaseItau.Domain.Common.Resouces;
 using CaseItau.Domain.Events.Fund;
 using CaseItau.Domain.ValueObjects;
 
@@ -37,22 +38,22 @@ public class Fund : Entity, IAggregateRoot
     {
         if (string.IsNullOrWhiteSpace(Code))
         {
-            throw new ArgumentException("Code cannot be null or empty.", nameof(Code));
+            throw new DomainException(Errors.Fund_CodeCannotBeNullOrEmpty);
         }
 
         if (string.IsNullOrWhiteSpace(Name))
         {
-            throw new ArgumentException("Name cannot be null or empty.", nameof(Name));
+            throw new DomainException(Errors.Fund_NameCannotBeNullOrEmpty);
         }
 
         if (Cnpj is null)
         {
-            throw new ArgumentNullException(nameof(Cnpj), "CNPJ cannot be null.");
+            throw new DomainException(Errors.Fund_CnpjCannotBeNull);
         }
 
         if (TypeId <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(TypeId), "TypeId must be greater than zero.");
+            throw new DomainException(Errors.Fund_TypeIdMustBeGreaterThanZero);
         }
     }
 }

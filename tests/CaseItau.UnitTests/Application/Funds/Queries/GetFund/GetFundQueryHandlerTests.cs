@@ -79,13 +79,13 @@ public class GetFundQueryHandlerTests
     [InlineData("")]
     [InlineData("  ")]
     [InlineData(null)]
-    public async Task Handle_WithInvalidCode_ShouldStillCallProvider(string invalidCode)
+    public async Task Handle_WithInvalidCode_ShouldStillCallProvider(string? invalidCode)
     {
         // Arrange
-        var query = new GetFundQuery(invalidCode);
+        var query = new GetFundQuery(invalidCode!);
 
         _fundQueryProviderMock
-            .Setup(x => x.GetFundAsync(invalidCode))
+            .Setup(x => x.GetFundAsync(invalidCode!))
             .ReturnsAsync((FundDto?)null);
 
         // Act
@@ -95,6 +95,6 @@ public class GetFundQueryHandlerTests
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(ApplicationErrors.FundNotFound);
 
-        _fundQueryProviderMock.Verify(x => x.GetFundAsync(invalidCode), Times.Once);
+        _fundQueryProviderMock.Verify(x => x.GetFundAsync(invalidCode!), Times.Once);
     }
 }
