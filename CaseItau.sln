@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.API", "CaseItau.API\CaseItau.API.csproj", "{3707953F-0288-465D-93BC-790A4E80D734}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.API", "src\CaseItau.API\CaseItau.API.csproj", "{3707953F-0288-465D-93BC-790A4E80D734}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8A27B06F-AE55-4467-A5A0-90D57EAA6C4B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{18C14C3E-F2A6-4DBB-9924-A7A4006A0450}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.Application", "CaseItau.Application\CaseItau.Application.csproj", "{7F877242-6029-417C-A3BB-C0525D87D552}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.Application", "src\CaseItau.Application\CaseItau.Application.csproj", "{7F877242-6029-417C-A3BB-C0525D87D552}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.Contracts", "CaseItau.Contracts\CaseItau.Contracts.csproj", "{4F15F53F-525F-43A1-835A-72B819F41BCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.Contracts", "src\CaseItau.Contracts\CaseItau.Contracts.csproj", "{4F15F53F-525F-43A1-835A-72B819F41BCD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.Domain", "CaseItau.Domain\CaseItau.Domain.csproj", "{1043C722-176C-4148-9B08-2F301974D66F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.Domain", "src\CaseItau.Domain\CaseItau.Domain.csproj", "{1043C722-176C-4148-9B08-2F301974D66F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.Infrastructure", "CaseItau.Infrastructure\CaseItau.Infrastructure.csproj", "{F4AEEB44-995F-4022-9DB6-6E314FD5E10C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaseItau.Infrastructure", "src\CaseItau.Infrastructure\CaseItau.Infrastructure.csproj", "{F4AEEB44-995F-4022-9DB6-6E314FD5E10C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
