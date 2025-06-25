@@ -23,10 +23,10 @@ public class CnpjTests
     [InlineData("")]
     [InlineData("   ")]
     [InlineData(null)]
-    public void Constructor_WithNullOrEmptyCnpj_ShouldThrowArgumentException(string invalidCnpj)
+    public void Constructor_WithNullOrEmptyCnpj_ShouldThrowArgumentException(string? invalidCnpj)
     {
         // Act & Assert
-        var act = () => new Cnpj(invalidCnpj);
+        var act = () => new Cnpj(invalidCnpj!);
         act.Should().Throw<ArgumentException>()
             .WithMessage("CNPJ cannot be null or empty. (Parameter 'Value')");
     }

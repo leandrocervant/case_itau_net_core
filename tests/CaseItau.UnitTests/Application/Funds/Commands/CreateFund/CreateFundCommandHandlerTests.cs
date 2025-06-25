@@ -125,10 +125,10 @@ public class CreateFundCommandHandlerTests
     [InlineData(null, "Valid Name", "123456780001951")]
     [InlineData("FUND001", "", "123456780001951")]
     [InlineData("FUND001", null, "123456780001951")]
-    public async Task Handle_WithInvalidCnpj_ShouldThrowArgumentException(string code, string name, string invalidCnpj)
+    public async Task Handle_WithInvalidCnpj_ShouldThrowArgumentException(string? code, string? name, string invalidCnpj)
     {
         // Arrange
-        var command = new CreateFundCommand(code, name, invalidCnpj, 1);
+        var command = new CreateFundCommand(code!, name!, invalidCnpj, 1);
         var fundType = new FundType("Equity Fund");
 
         _fundTypeRepositoryMock

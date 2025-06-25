@@ -71,7 +71,7 @@ public class FundTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Constructor_WithInvalidCode_ShouldCreateFundWithInvalidCode(string invalidCode)
+    public void Constructor_WithInvalidCode_ShouldCreateFundWithInvalidCode(string? invalidCode)
     {
         // Arrange
         const string name = "Test Fund";
@@ -79,7 +79,7 @@ public class FundTests
         const long typeId = 1;
 
         // Act & Assert
-        var act = () => new Fund(invalidCode, name, cnpj, typeId);
+        var act = () => new Fund(invalidCode!, name, cnpj, typeId);
         act.Should().Throw<ArgumentException>();
     }
 
@@ -87,7 +87,7 @@ public class FundTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Constructor_WithInvalidName_ShouldCreateFundWithInvalidName(string invalidName)
+    public void Constructor_WithInvalidName_ShouldCreateFundWithInvalidName(string? invalidName)
     {
         // Arrange
         const string code = "FUND001";
@@ -95,7 +95,7 @@ public class FundTests
         const long typeId = 1;
 
         // Act & Assert
-        var act = () => new Fund(code, invalidName, cnpj, typeId);
+        var act = () => new Fund(code, invalidName!, cnpj, typeId);
         act.Should().Throw<ArgumentException>();
     }
 
