@@ -1,0 +1,39 @@
+@rootUrl=https://localhost:44378/api/v1
+
+### List Funds
+GET {{rootUrl}}/funds
+
+### Create Fund
+POST {{rootUrl}}/funds
+Content-Type: application/json
+
+{
+    "code": "ITAERF323",
+    "name": "ITAU JUROS RF +",
+    "cnpj": "11222333444455",
+    "typeId": 1
+}
+
+### Get Fund
+GET {{rootUrl}}/funds/ITAERF323
+
+### Update Fund
+PUT {{rootUrl}}/funds/ITAERF323
+Content-Type: application/json
+
+{
+    "name": "ITAU JUROS RA",
+    "cnpj": "11222333444451",
+    "typeId": 1
+}
+
+### Delete Fund
+DELETE {{rootUrl}}/funds/ITAERF323
+
+### Adjust Fund
+PATCH {{rootUrl}}/funds/ITAERF323/patrimony
+Content-Type: application/json
+
+{
+  "patrimony": -10
+}
