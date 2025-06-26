@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     env:
       SOLUTION_NAME: CaseItau.sln
@@ -54,83 +54,29 @@ jobs:
         New-Item -Path .\.sonar\scanner -ItemType Directory -Force
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.SOLUTION_NAME }}
-
     - name: Begin SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-        $workingDir = Get-Location
-        Write-Host "Working directory: $workingDir"
-        Write-Host "Coverage path: $workingDir/coverage-reports/*.xml"
-        Write-Host "Test results path: $workingDir/test-results/*.trx"
         .\.sonar\scanner\dotnet-sonarscanner begin `
           /k:"leandrocervant_case_itau_net_core" `
           /o:"leandrocervant" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.host.url="https://sonarcloud.io" `
-          /d:sonar.projectBaseDir="$workingDir" `
-          /d:sonar.cs.cobertura.reportsPaths="coverage-reports/*.xml" `
-          /d:sonar.test.results.trx.locations="test-results/*.trx"
+          /d:sonar.cs.cobertura.reportsPath="./**/TestResults/**/*.xml"
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_NAME }}
 
     - name: Build solution
       run: dotnet build ${{ env.SOLUTION_NAME }} --configuration Release --no-restore
 
-    - name: Run Unit Tests with coverage
+    - name: Run Tests with coverage
       run: >
-        dotnet test ${{ env.UNIT_TEST_PROJECT }}
-        --configuration Release
-        --no-build
-        --logger trx
+        dotnet test --no-build --verbosity normal
         --collect:"XPlat Code Coverage"
-
-    - name: Run Integration Tests with coverage
-      run: >
-        dotnet test ${{ env.INTEGRATION_TEST_PROJECT }}
-        --configuration Release
-        --no-build
-        --logger trx
-        --collect:"XPlat Code Coverage"
-
-    - name: Create coverage reports directory
-      shell: powershell
-      run: |
-        New-Item -Path "coverage-reports" -ItemType Directory -Force
-        New-Item -Path "test-results" -ItemType Directory -Force
-
-    - name: Copy coverage files to organized location
-      shell: powershell
-      run: |
-        $coverageFiles = Get-ChildItem -Path . -Recurse -Filter "coverage.cobertura.xml"
-        $counter = 1
-        foreach ($file in $coverageFiles) {
-            $newName = "coverage-$counter.cobertura.xml"
-            Copy-Item -Path $file.FullName -Destination "coverage-reports\$newName"
-            Write-Host "Copied: $($file.FullName) -> coverage-reports\$newName"
-            $counter++
-        }
-
-    - name: Copy TRX files to organized location
-      shell: powershell
-      run: |
-        $trxFiles = Get-ChildItem -Path . -Recurse -Filter "*.trx"
-        $counter = 1
-        foreach ($file in $trxFiles) {
-            $newName = "test-results-$counter.trx"
-            Copy-Item -Path $file.FullName -Destination "test-results\$newName"
-            Write-Host "Copied: $($file.FullName) -> test-results\$newName"
-            $counter++
-        }
-
-    - name: List organized coverage and test files
-      shell: powershell
-      run: |
-        Write-Host "=== Coverage Files ==="
-        Get-ChildItem -Path "coverage-reports" | ForEach-Object { Write-Host $_.FullName }
-        Write-Host "=== Test Result Files ==="
-        Get-ChildItem -Path "test-results" | ForEach-Object { Write-Host $_.FullName }
+        --results-directory "./TestResults"
 
     - name: End SonarCloud analysis
       env:
