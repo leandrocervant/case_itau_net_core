@@ -8,13 +8,11 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     env:
       SOLUTION_NAME: CaseItau.sln
-      UNIT_TEST_PROJECT: tests/CaseItau.UnitTests/CaseItau.UnitTests.csproj
-      INTEGRATION_TEST_PROJECT: tests/CaseItau.IntegrationTests/CaseItau.IntegrationTests.csproj
-
+     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
