@@ -66,7 +66,6 @@ jobs:
           /k:"leandrocervant_case_itau_net_core" `
           /o:"leandrocervant" `
           /d:sonar.token="$env:SONAR_TOKEN" `
-          /d:sonar.host.url="https://sonarcloud.io" `
           /d:sonar.qualitygate.wait=true `
           /d:sonar.cs.opencover.reportsPaths="${{ env.COVERAGE_PATH }}" `
           /d:sonar.coverage.exclusions="${{ env.COVERAGE_EXCLUSIONS }}"
