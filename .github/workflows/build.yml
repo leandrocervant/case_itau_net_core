@@ -12,7 +12,9 @@ jobs:
 
     env:
       SOLUTION_NAME: CaseItau.sln
-     
+      COVERAGE_PATH: "./TestResults/*/coverage.opencover.xml"
+      COVERAGE_EXCLUSIONS: "**/Program.cs,**/DependencyInjection.cs,**/RequestPipeline.cs,**/Resources/*.cs,**/Migrations/**/*.cs,**/Persistence/Contexts/**/*.cs,**/Persistence/Mappings/**/*.cs,**/Persistence/ValueObjectMappings/**/*.cs"
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -41,7 +43,7 @@ jobs:
       id: cache-sonar-scanner
       uses: actions/cache@v4
       with:
-        path: .\.sonar\scanner
+        path: ${{ runner.temp }}\scanner
         key: ${{ runner.os }}-sonar-scanner
         restore-keys: ${{ runner.os }}-sonar-scanner
 
@@ -49,20 +51,25 @@ jobs:
       if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
       shell: powershell
       run: |
-        New-Item -Path .\.sonar\scanner -ItemType Directory -Force
-        dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+        New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory -Force
+        dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+
+    - name: Install ReportGenerator
+      run: dotnet tool update dotnet-reportgenerator-globaltool --tool-path ${{ runner.temp }}\reportgenerator
 
     - name: Begin SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-        .\.sonar\scanner\dotnet-sonarscanner begin `
+        ${{ runner.temp }}\scanner\dotnet-sonarscanner begin `
           /k:"leandrocervant_case_itau_net_core" `
           /o:"leandrocervant" `
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+          /d:sonar.token="$env:SONAR_TOKEN" `
           /d:sonar.host.url="https://sonarcloud.io" `
-          /d:sonar.cs.cobertura.reportsPath="./**/TestResults/**/*.xml"
+          /d:sonar.qualitygate.wait=true `
+          /d:sonar.cs.opencover.reportsPaths="${{ env.COVERAGE_PATH }}" `
+          /d:sonar.coverage.exclusions="${{ env.COVERAGE_EXCLUSIONS }}"
 
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_NAME }}
@@ -73,16 +80,23 @@ jobs:
     - name: Run Tests with coverage
       run: >
         dotnet test 
-        --configuration Release 
         --no-build 
-        --verbosity normal
-        --collect:"XPlat Code Coverage"
-        --results-directory "./TestResults"
+        --configuration Release 
+        --collect:"XPlat Code Coverage" 
+        --results-directory ./TestResults 
+        -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByFile="${{ env.COVERAGE_EXCLUSIONS }}"
+
+    - name: Generate coverage report
+      run: ${{ runner.temp }}\reportgenerator\reportgenerator -reports:${{ env.COVERAGE_PATH }} -targetdir:coverage-report -reporttypes:TextSummary
+
+    - name: Display coverage summary
+      run: Get-Content coverage-report/Summary.txt
 
     - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-        .\.sonar\scanner\dotnet-sonarscanner end `
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        ${{ runner.temp }}\scanner\dotnet-sonarscanner end `
+          /d:sonar.token="$env:SONAR_TOKEN"
